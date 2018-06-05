@@ -41,31 +41,56 @@ namespace GameOfLife.Core
 
         public int GetSum(int x, int y)
         {
-            if (x < 0 || x >= Width)
+            if (x >= Width)
                 return 0;
-            if (y < 0 || y >= Height)
+            if (y >= Height)
                 return 0;
+            if (x < 0)
+                x = 0;
+            if (y < 0)
+                y = 0;
             return neighborsSum[x, y];
         }
 
         private int Around(int x, int y)
         {
-            return GetMap(x, y) + GetSum(x + 1, y) + GetSum(x, y + 1) - GetSum(x + 1, y + 1);
+            return GetSum(x - 1, y - 1) -
+                GetSum(x + 2, y - 1) - 
+                GetSum(x - 1, y + 2) + 
+                GetSum(x + 2, y + 2);
         }
 
         private void InitNeibhors()
         {
             for (int x = Width - 1; x >= 0; x--)
             {
-                for (int y = Height - 1; y >= 0; y++)
+                for (int y = Height - 1; y >= 0; y--)
                 {
                     // A = A + B + C - D
-                    neighborsSum[x, y] = GetMap(x, y) + GetSum(x + 1, y) + GetSum(x, y + 1) - GetSum(x + 1, y + 1);
+                    neighborsSum[x, y] = (GetMap(x, y) > 0 ? 1 : 0) + 
+                        GetSum(x + 1, y) + 
+                        GetSum(x, y + 1) - 
+                        GetSum(x + 1, y + 1);
                 }
             }
         }
+
+        private int Around1(int x, int y)
+        {
+            int sum = 0;
+            for (int sx = -1; sx <= 1; sx++)
+            {
+                for (int sy = -1; sy <= 1; sy++)
+                {
+                    if (GetMap(x + sx, y + sy) > 0)
+                        sum++;
+                }
+            }
+            return sum;
+        }
         public void MarkLifeDeath()
         {
+            InitNeibhors();
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
@@ -73,9 +98,9 @@ namespace GameOfLife.Core
                     int neighbors = Around(x, y);
                     if (map[x, y] == 1) // if alive
                     {
-                        if (neighbors <= 1) // death by under population. (rule 1.)
+                        if (neighbors <= 2) // death by under population. (rule 1.)
                             map[x, y] = 2;
-                        else if (neighbors >= 4) // death by overpopulation. (rule 3.)
+                        else if (neighbors >= 5) // death by overpopulation. (rule 3.)
                             map[x, y] = 2;
                     }
                     else // if empty
