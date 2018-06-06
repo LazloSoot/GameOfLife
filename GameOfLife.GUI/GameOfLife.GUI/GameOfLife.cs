@@ -56,14 +56,15 @@ namespace GameOfLife.GUI
 
         private void AddCell(int x, int y)
         {
-            var cell = new Label();
-
-            cell.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            cell.Location = new System.Drawing.Point(x * cellWidth, y * cellHeight);
-            cell.Size = new System.Drawing.Size(cellWidth + 1, cellHeight + 1);
-            cell.Text = "";
-            cell.BackColor = emptyColor;
-            cell.Parent = panel1;
+            var cell = new Label
+            {
+                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
+                Location = new System.Drawing.Point(x * cellWidth, y * cellHeight),
+                Size = new System.Drawing.Size(cellWidth + 1, cellHeight + 1),
+                Text = "",
+                BackColor = emptyColor,
+                Parent = panel1
+            };
             cell.MouseClick += Cell_MouseClick;
 
             cells[x, y] = cell;
