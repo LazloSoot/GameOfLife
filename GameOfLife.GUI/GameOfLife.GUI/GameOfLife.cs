@@ -20,11 +20,15 @@ namespace GameOfLife.GUI
 
         private Label[,] cells;
         private Color aliveColor,bornColor, diedColor, emptyColor;
+        private bool isFirstPartOfStep;
+        private bool isGameStarted;
+
         public GameOfLife()
         {
             InitializeComponent();
             InitGame();
         }
+        
 
         private void InitGame()
         {
@@ -47,6 +51,7 @@ namespace GameOfLife.GUI
             bornColor = Color.Yellow;
             diedColor = Color.DarkRed;
             emptyColor = Color.White;
+            isFirstPartOfStep = true;
         }
 
         private void AddCell(int x, int y)
@@ -72,14 +77,40 @@ namespace GameOfLife.GUI
             cells[x, y].BackColor = color == 1 ? aliveColor : emptyColor;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void StepForwardBtn_Click(object sender, EventArgs e)
         {
-            game.MarkLifeDeath();
+            if(isFirstPartOfStep)
+            {
+                game.PrepeareGeneration();
+            }
+            else
+            {
+                game.CommitGeneration();
+            }
             Refresh();
+            isFirstPartOfStep = !isFirstPartOfStep;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void StartStopBtn_Click(object sender, EventArgs e)
         {
+            isGameStarted = !isGameStarted;
+
+            if (isGameStarted)
+            {
+                Timer.Enabled = true;
+                StartStopBtn.Text = "Pause";
+            }
+            else
+            {
+                Timer.Enabled = false;
+                StartStopBtn.Text = "Start game";
+                isFirstPartOfStep = false;
+            }
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            game.PrepeareGeneration();
             game.CommitGeneration();
             Refresh();
         }
