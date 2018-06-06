@@ -88,7 +88,7 @@ namespace GameOfLife.Core
             }
             return sum;
         }
-        public void MarkLifeDeath()
+        public void PrepeareGeneration()
         {
             InitNeibhors();
             for (int x = 0; x < Width; x++)
